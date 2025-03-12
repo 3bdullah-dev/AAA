@@ -1,0 +1,6 @@
+[build]
+  functions = "functions"  # مجلد الـ Serverless Functions
+  publish = "public"      # مجلد الواجهة الأمامية
+
+[functions]
+  node_bundler = "esbuild"

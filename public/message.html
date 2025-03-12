@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <title>إرسال رسالة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* تنسيقات عامة */
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #2c3e50;
+            margin: 0;
+            padding: 40px 20px; /* زيادة الهامش العلوي والسفلي */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* كونتينر الرسالة */
+        .message-container {
+            max-width: 1400px; /* عرض أوسع */
+            width: 100%;
+            padding: 0 20px; /* هامش جانبي */
+        }
+
+        /* تصميم النموذج */
+        .form-wrapper {
+            background: white;
+            border-radius: 20px; /* زوايا أكثر نعومة */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ظل أعمق */
+            padding: 4rem 3rem; /* زيادة المساحة الداخلية */
+            max-width: 900px; /* عرض أكبر للكونتينر */
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        /* تأثير عند التحويم */
+        .form-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        /* عنوان ديناميكي */
+        .recipient-name {
+            color: #2c3e50;
+            font-size: 2.5rem; /* حجم أكبر */
+            margin-bottom: 3rem;
+            padding-bottom: 20px;
+            border-bottom: 4px solid #3498db;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* نموذج الإرسال */
+        #messageForm {
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* مسافة أكبر بين العناصر */
+            align-items: center;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px; /* ارتفاع أكبر */
+            padding: 25px;
+            border: 3px solid #3498db;
+            border-radius: 15px;
+            font-size: 1.25rem;
+            resize: vertical;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            /* position: relative;
+            left: 60px; */
+        }
+
+        textarea:focus {
+            border-color: #2980b9;
+            transform: scale(1.02);
+            outline: none;
+        }
+
+        button[type="submit"] {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        /* حالة التحميل */
+        .loading button {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* استجابة محسنة */
+        @media (max-width: 1200px) {
+            .form-wrapper {
+                max-width: 800px;
+                padding: 3rem 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .form-wrapper {
+                max-width: 700px;
+                padding: 2rem;
+            }
+            
+            .recipient-name {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-wrapper {
+                max-width: 100%;
+                border-radius: 15px;
+                padding: 2rem 1rem;
+            }
+            
+            textarea {
+                font-size: 1.1rem;
+                min-height: 250px;
+            }
+            
+            button {
+                font-size: 1.1rem;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <div class="form-wrapper">
+            <!-- عنوان ديناميكي -->
+            <h2 class="recipient-name" id="recipientName">إرسال رسالة مجهولة</h2>
+
+            <form id="messageForm">
+                <textarea
+                    name="message"
+                    placeholder="اكتب رسالتك هنا..."
+                    required
+                ></textarea>
+                <button type="submit">
+                    إرسال <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // تغيير النص الديناميكي إذا كان هناك اسم مستقبل (مثال)
+        const urlParams = new URLSearchParams(window.location.search);
+        const recipient = urlParams.get('to');
+        if (recipient) {
+            document.getElementById('recipientName').textContent = `إرسال رسالة مجهولة إلى ${recipient}`;
+        }
+
+        // معالجة الإرسال
+        document.getElementById('messageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const button = form.querySelector('button');
+            const originalText = button.innerHTML;
+            
+            try {
+                // إظهار حالة التحميل
+                form.classList.add('loading');
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال';
+                
+                // محاكاة الإرسال (استبدل هذا بطلب API حقيقي)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // إعادة التهيئة بعد الإرسال
+                form.reset();
+                // alert('تم إرسال الرسالة بنجاح!');
+                
+            } finally {
+                form.classList.remove('loading');
+                button.innerHTML = originalText;
+            }
+        });
+    </script>
+
+  </div>
+    <script>
+      document
+        .getElementById("messageForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const message = document.querySelector("textarea").value;
+          const userId = window.location.pathname.split("/").pop(); // الحصول على الـ ID من الرابط
+
+          try {
+            const response = await fetch(`/messages/${userId}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message }),
+            });
+
+            if (response.ok) {
+              alert("تم إرسال رسالتك!");
+              window.location.href = "/auth/index"; // تحويل إلى صفحة تسجيل الدخول
+            } else {
+              alert("حدث خطأ، حاول مرة أخرى");
+            }
+          } catch (error) {
+            alert("حدث خطأ في الاتصال");
+          }
+        });
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const userId = window.location.pathname.split("/").pop();
+
+        try {
+          // الحصول على اسم المستخدم
+          const response = await fetch(`/api/user/${userId}`);
+          const data = await response.json();
+
+          // تحديث العنوان
+          document.getElementById(
+            "recipientName"
+          ).textContent = `إرسال رسالة مجهولة إلى ${data.name}`;
+        } catch (error) {
+          document.getElementById("recipientName").textContent =
+            "المستخدم غير موجود";
+          document.getElementById("messageForm").style.display = "none";
+        }
+      });
+
+      // معالجة الإرسال
+      document
+        .getElementById("messageForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          // ... الكود السابق ...
+        });
+    </script>
+  </body>
+</html>
+
+

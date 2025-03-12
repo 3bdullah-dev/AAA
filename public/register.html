@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html dir="rtl">
+  <head>
+    <title>إنdاب</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        background: white;
+        padding: 40px 60px;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        transition: transform 0.3s ease;
+      }
+
+      h2 {
+        color: #2c3e50;
+        margin-bottom: 40px;
+        text-align: center;
+        position: relative;
+        font-size: 2.2em;
+      }
+
+      .input-group {
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      input {
+        width: 100%;
+        padding: 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      input:focus {
+        border-color: #2196f3;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+      }
+
+      .input-icon {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-size: 1.2em;
+      }
+
+      button {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 25px;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+      }
+
+      .index-link {
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        color: #2196f3;
+        font-size: 1.5em;
+        transition: color 0.3s ease;
+      }
+
+      .error {
+        background: #ffebee;
+        color: #c62828;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        display: none;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      @media (max-width: 768px) {
+        .index-container {
+          padding: 30px;
+          max-width: 500px;
+        }
+
+        input {
+          font-size: 1em;
+          padding: 15px;
+        }
+
+        button {
+          font-size: 1em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .index-container {
+          padding: 20px;
+          max-width: 100%;
+        }
+
+        h2 {
+          font-size: 1.8em;
+          margin-bottom: 30px;
+        }
+
+        .input-icon {
+          right: 15px;
+          font-size: 1em;
+        }
+      }
+    </style>
+    <div class="container">
+      <h2>إنشاء حساب جديد</h2>
+      <form id="registerForm">
+        <div class="input-group" st>
+          <input type="text" name="name" placeholder="الاسم الكامل" required />
+        </div>
+        <div class="input-group" st>
+          <input
+            type="email"
+            name="email"
+            placeholder="البريد الإلكتروني"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            name="password"
+            placeholder="كلمة المرور"
+            required
+          />
+        </div>
+        <button type="submit">تسجيل</button>
+        <a href="/auth/index" class="index-link">لدي حساب بالفعل</a>
+        <p id="error-message" class="error"></p>
+      </form>
+    </div>
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const name = document.querySelector('input[name="name"]').value;
+          const email = document.querySelector('input[name="email"]').value;
+          const password = document.querySelector(
+            'input[name="password"]'
+          ).value;
+
+          try {
+            const response = await fetch("/auth/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, password }),
+            });
+
+            if (response.ok) {
+              window.location.href = "/auth/index";
+            } else {
+              const error = await response.text();
+              document.getElementById("error-message").style = "display: block";
+              document.getElementById("error-message").textContent = error;
+            }
+          } catch (error) {
+            document.getElementById("error-message").textContent =
+              "حدث خطأ في الاتصال";
+          }
+        });
+    </script>
+  </body>
+</html>

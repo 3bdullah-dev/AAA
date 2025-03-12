@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html dir="rtl">
+  <head>
+    <title>تسجيل الدخول</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .login-container {
+        background: white;
+        padding: 40px 60px;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        transition: transform 0.3s ease;
+      }
+
+      h2 {
+        color: #2c3e50;
+        margin-bottom: 40px;
+        text-align: center;
+        position: relative;
+        font-size: 2.2em;
+      }
+
+      .input-group {
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      input {
+        width: 100%;
+        padding: 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      input:focus {
+        border-color: #2196f3;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+      }
+
+      .input-icon {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-size: 1.2em;
+      }
+
+      button {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 25px;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+      }
+
+      .register-link {
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        color: #2196f3;
+        font-size: 1.5em;
+        transition: color 0.3s ease;
+      }
+
+      .error {
+        background: #ffebee;
+        color: #c62828;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        display: none;
+        text-align: center;
+        font-size: 1.1em;
+      }
+
+      @media (max-width: 768px) {
+        .login-container {
+          padding: 30px;
+          max-width: 500px;
+        }
+
+        input {
+          font-size: 1em;
+          padding: 15px;
+        }
+
+        button {
+          font-size: 1em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .login-container {
+          padding: 20px;
+          max-width: 100%;
+        }
+
+        h2 {
+          font-size: 1.8em;
+          margin-bottom: 30px;
+        }
+
+        .input-icon {
+          right: 15px;
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>تسجيل الدخول</h2>
+      <div id="error-message" class="error"></div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <input
+            type="email"
+            name="email"
+            placeholder="البريد الإلكتروني"
+            required
+          />
+          <i class="input-icon fas fa-envelope"></i>
+        </div>
+
+        <div class="input-group">
+          <input
+            type="password"
+            name="password"
+            placeholder="كلمة المرور"
+            required
+          />
+          <i class="input-icon fas fa-lock"></i>
+        </div>
+
+        <button type="submit">دخول</button>
+        <a href="/auth/register" class="register-link">إنشاء حساب جديد</a>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const button = document.querySelector("button");
+          button.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> جارِ التحقق...';
+          button.disabled = true;
+
+          try {
+            const response = await fetch("/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: document.querySelector('input[name="email"]').value,
+                password: document.querySelector('input[name="password"]')
+                  .value,
+              }),
+            });
+
+            if (response.ok) {
+              window.location.href = "/profile";
+            } else {
+              const error = await response.text();
+              showError(error);
+            }
+          } catch (error) {
+            showError("حدث خطأ في الاتصال بالخادم");
+          } finally {
+            button.innerHTML = "دخول";
+            button.disabled = false;
+          }
+        });
+
+      function showError(message) {
+        const errorDiv = document.getElementById("error-message");
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+
+        setTimeout(() => {
+          errorDiv.style.display = "none";
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
